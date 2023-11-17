@@ -28,15 +28,21 @@ class ViewController: UIViewController {
     
     // MARK: - IB Actions
     @IBAction func redSliderAction() {
-        rgbView.backgroundColor = UIColor(
-            red: CGFloat(redSlider.value),
-            green: CGFloat(greenSlider.value),
-            blue: CGFloat(blueSlider.value),
-            alpha: 1
-        )
+        updateRGBview()
+        redValueLabel.text = String(roundValueByHundreds(for: redSlider.value))
     }
     
     @IBAction func greenSliderAction() {
+        updateRGBview()
+        greenValueLabel.text = String(roundValueByHundreds(for: greenSlider.value))
+    }
+    
+    @IBAction func blueSliderAction() {
+        updateRGBview()
+        blueValueLabel.text = String(roundValueByHundreds(for: blueSlider.value))
+    }
+    
+    private func updateRGBview() {
         rgbView.backgroundColor = UIColor(
             red: CGFloat(redSlider.value),
             green: CGFloat(greenSlider.value),
@@ -45,13 +51,8 @@ class ViewController: UIViewController {
         )
     }
     
-    @IBAction func blueSliderAction() {
-        rgbView.backgroundColor = UIColor(
-            red: CGFloat(redSlider.value),
-            green: CGFloat(greenSlider.value),
-            blue: CGFloat(blueSlider.value),
-            alpha: 1
-        )
+    private func roundValueByHundreds(for value: Float) -> Float {
+        (value * 100).rounded() / 100
     }
-}
+ }
 
