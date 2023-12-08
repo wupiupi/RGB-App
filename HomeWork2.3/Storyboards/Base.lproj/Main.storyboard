@@ -12,12 +12,12 @@
         <!--Main View Controller-->
         <scene sceneID="NRz-NV-jI4">
             <objects>
-                <viewController id="7gh-CV-0bA" customClass="MainViewController" customModule="HomeWork2_3" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="7gh-CV-0bA" customClass="MainViewController" customModule="RGB_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="HPt-XJ-lg3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="iKZ-nM-l41"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <navigationItem key="navigationItem" id="CNk-9T-3AQ">
                         <barButtonItem key="rightBarButtonItem" image="gear" catalog="system" id="lXs-Ye-egV">
@@ -34,7 +34,7 @@
         <!--Settings View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SettingsViewController" customModule="HomeWork2_3" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SettingsViewController" customModule="RGB_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -149,26 +149,42 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="spc-qE-rnk">
+                                <rect key="frame" x="117" y="486.5" width="86.5" height="46.5"/>
+                                <color key="tintColor" systemColor="labelColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Done">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="27"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="doneButtonDidTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="kzk-xP-97q"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xaP-ox-lIh" secondAttribute="trailing" constant="16" id="0uH-mp-0cW"/>
+                            <constraint firstItem="spc-qE-rnk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="91G-wy-gKY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="qnc-NC-xS6" secondAttribute="trailing" constant="16" id="9z0-zo-wiN"/>
                             <constraint firstItem="qnc-NC-xS6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Mg0-pf-bGO"/>
                             <constraint firstItem="xaP-ox-lIh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="36" id="fbg-12-uJl"/>
                             <constraint firstItem="qnc-NC-xS6" firstAttribute="top" secondItem="xaP-ox-lIh" secondAttribute="bottom" constant="60" id="vGC-C4-mul"/>
                             <constraint firstItem="xaP-ox-lIh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="wSZ-GS-E9P"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="spc-qE-rnk" secondAttribute="bottom" constant="35" id="x5D-1N-kKS"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wv8-Gh-2b7"/>
                     <connections>
                         <outlet property="blueLabel" destination="83Q-OC-Xx0" id="u8a-fD-JEa"/>
                         <outlet property="blueSlider" destination="R0h-1g-DiG" id="W6m-3I-fnh"/>
+                        <outlet property="blueTextField" destination="3At-15-mJD" id="zlb-Tw-wyT"/>
                         <outlet property="greenLabel" destination="4ba-Jm-Cuq" id="vgR-jr-fqv"/>
                         <outlet property="greenSlider" destination="CHm-YR-7UR" id="wos-lN-EzJ"/>
+                        <outlet property="greenTextField" destination="Dp0-0o-aHB" id="iVM-3L-Kku"/>
                         <outlet property="redLabel" destination="FxH-66-aio" id="T0A-Mn-3jy"/>
                         <outlet property="redSlider" destination="or4-Lh-5Go" id="t1h-JP-rPI"/>
+                        <outlet property="redTextField" destination="ujL-WX-y8R" id="JF9-re-9Oe"/>
                         <outlet property="rgbView" destination="xaP-ox-lIh" id="mMu-UW-qwQ"/>
                     </connections>
                 </viewController>
@@ -182,7 +198,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4Tt-wS-ntD" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="6gm-RW-TYK">
-                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="50"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -197,11 +213,11 @@
     </scenes>
     <resources>
         <image name="gear" catalog="system" width="128" height="122"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="secondarySystemBackgroundColor">
             <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
