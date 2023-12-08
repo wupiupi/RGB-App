@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  HomeWork2.3
+//  RGB_App
 //
 //  Created by Paul Makey on 16.11.23.
 //
@@ -20,15 +20,44 @@ final class SettingsViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
+    @IBOutlet var redTextField: UITextField!
+    @IBOutlet var greenTextField: UITextField!
+    @IBOutlet var blueTextField: UITextField!
+    
+    // MARK: - Properties
+    var colorView: UIView!
+    
+    weak var delegate: SettingsViewControllerDelegate?
+    
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         rgbView.layer.cornerRadius = 15
+        
+        guard let backgroundColor = colorView.backgroundColor else { return }
+        if let colorComponents = extractColors(for: backgroundColor) {
+            updateRGBview(
+                redVal: colorComponents.red,
+                greenVal: colorComponents.green,
+                blueVal: colorComponents.blue
+            )
+            redSlider.value = colorComponents.red
+            greenSlider.value = colorComponents.green
+            blueSlider.value = colorComponents.blue
+            
+            redLabel.text = roundString(for: colorComponents.red)
+            greenLabel.text = roundString(for: colorComponents.green)
+            blueLabel.text = roundString(for: colorComponents.blue)
+        }
     }
     
     // MARK: - IB Actions
     @IBAction func sliderValueHasChanged(_ sender: UISlider) {
-        updateRGBview()
+        updateRGBview(
+            redVal: redSlider.value,
+            greenVal: greenSlider.value,
+            blueVal: blueSlider.value
+        )
         
         switch sender {
         case redSlider:
@@ -40,6 +69,11 @@ final class SettingsViewController: UIViewController {
         }
     }
     
+    @IBAction func doneButtonDidTapped() {
+        delegate?.setColor(with: rgbView)
+        dismiss(animated: true)
+    }
+    
  }
 
 // MARK: - Private Methods
@@ -49,12 +83,21 @@ private extension SettingsViewController {
         String(format: "%.2f", value)
     }
     
-    func updateRGBview() {
+    func updateRGBview(redVal: Float, greenVal: Float, blueVal: Float) {
         rgbView.backgroundColor = UIColor(
-            red: CGFloat(redSlider.value),
-            green: CGFloat(greenSlider.value),
-            blue: CGFloat(blueSlider.value),
+            red: CGFloat(redVal),
+            green: CGFloat(greenVal),
+            blue: CGFloat(blueVal),
             alpha: 1
         )
+    }
+    
+    func extractColors(for color: UIColor) -> (red: Float, green: Float, blue: Float)? {
+        guard let components = color.cgColor.components else { return nil }
+        let red = Float(components[0])
+        let green = Float(components[1])
+        let blue = Float(components[2])
+        
+        return (red, green, blue)
     }
 }
