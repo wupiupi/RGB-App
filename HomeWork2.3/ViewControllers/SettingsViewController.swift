@@ -34,6 +34,7 @@ final class SettingsViewController: UIViewController {
         super.viewDidLoad()
         rgbView.layer.cornerRadius = 15
         
+        /*
         guard let backgroundColor = colorView.backgroundColor else { return }
         if let colorComponents = extractColors(for: backgroundColor) {
             updateRGBview(
@@ -49,6 +50,23 @@ final class SettingsViewController: UIViewController {
             greenLabel.text = roundString(for: colorComponents.green)
             blueLabel.text = roundString(for: colorComponents.blue)
         }
+         */
+        
+        guard let components = colorView.backgroundColor?.components else { return }
+        
+        redSlider.value = Float(components.red)
+        greenSlider.value = Float(components.green)
+        blueSlider.value = Float(components.blue)
+        
+        redLabel.text = roundString(for: redSlider.value)
+        greenLabel.text = roundString(for: greenSlider.value)
+        blueLabel.text = roundString(for: blueSlider.value)
+        
+        updateRGBview(
+            redVal: redSlider.value,
+            greenVal: greenSlider.value,
+            blueVal: blueSlider.value
+        )
     }
     
     // MARK: - IB Actions
@@ -92,6 +110,7 @@ private extension SettingsViewController {
         )
     }
     
+    /*
     func extractColors(for color: UIColor) -> (red: Float, green: Float, blue: Float)? {
         guard let components = color.cgColor.components else { return nil }
         let red = Float(components[0])
@@ -99,5 +118,18 @@ private extension SettingsViewController {
         let blue = Float(components[2])
         
         return (red, green, blue)
+    }
+     */
+}
+
+extension UIColor {
+    var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        return (red, green, blue, alpha)
     }
 }
