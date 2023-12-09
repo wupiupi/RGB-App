@@ -42,13 +42,9 @@ final class SettingsViewController: UIViewController {
     
     // MARK: - IB Actions
     @IBAction func sliderValueHasChanged(_ sender: UISlider) {
-        updateRGBview(
-            redVal: redSlider.value,
-            greenVal: greenSlider.value,
-            blueVal: blueSlider.value
-        )
+        updateRGBview()
         
-        let roundedValue = roundString(for: sender.value)
+        let roundedValue = convertFloatToString(for: sender.value)
         
         switch sender {
         case redSlider:
@@ -64,7 +60,7 @@ final class SettingsViewController: UIViewController {
     }
     
     @IBAction func doneButtonDidTapped() {
-        delegate?.setColor(with: rgbView)
+        delegate?.setColor(with: rgbView.backgroundColor ?? .black)
         dismiss(animated: true)
     }
     
@@ -79,15 +75,15 @@ final class SettingsViewController: UIViewController {
 // MARK: - Private Methods
 private extension SettingsViewController {
     
-    func roundString(for value: Float) -> String {
+    func convertFloatToString(for value: Float) -> String {
         String(format: "%.2f", value)
     }
     
-    func updateRGBview(redVal: Float, greenVal: Float, blueVal: Float) {
+    func updateRGBview() {
         rgbView.backgroundColor = UIColor(
-            red: CGFloat(redVal),
-            green: CGFloat(greenVal),
-            blue: CGFloat(blueVal),
+            red: CGFloat(redSlider.value),
+            green: CGFloat(greenSlider.value),
+            blue: CGFloat(blueSlider.value),
             alpha: 1
         )
     }
@@ -99,22 +95,19 @@ private extension SettingsViewController {
         greenSlider.value = Float(components.green)
         blueSlider.value = Float(components.blue)
         
-        redLabel.text = roundString(for: redSlider.value)
-        greenLabel.text = roundString(for: greenSlider.value)
-        blueLabel.text = roundString(for: blueSlider.value)
+        redLabel.text = convertFloatToString(for: redSlider.value)
+        greenLabel.text = convertFloatToString(for: greenSlider.value)
+        blueLabel.text = convertFloatToString(for: blueSlider.value)
         
         redTextField.text = redLabel.text
         greenTextField.text = greenLabel.text
         blueTextField.text = blueLabel.text
         
-        updateRGBview(
-            redVal: redSlider.value,
-            greenVal: greenSlider.value,
-            blueVal: blueSlider.value
-        )
+        updateRGBview()
     }
 }
 
+// MARK: - Color Extracting
 extension UIColor {
     var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         var red: CGFloat = 0
@@ -150,20 +143,16 @@ extension SettingsViewController: UITextFieldDelegate {
         switch textField {
             case redTextField:
                 redSlider.setValue(floatText, animated: true)
-                redLabel.text = roundString(for: redSlider.value)
+                redLabel.text = convertFloatToString(for: redSlider.value)
             case greenTextField: 
                 greenSlider.setValue(floatText, animated: true)
-                greenLabel.text = roundString(for: greenSlider.value)
+                greenLabel.text = convertFloatToString(for: greenSlider.value)
             default:
                 blueSlider.setValue(floatText, animated: true)
-                blueLabel.text = roundString(for: blueSlider.value)
+                blueLabel.text = convertFloatToString(for: blueSlider.value)
         }
         
-        updateRGBview(
-            redVal: redSlider.value,
-            greenVal: greenSlider.value,
-            blueVal: blueSlider.value
-        )
+        updateRGBview()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -174,9 +163,11 @@ extension SettingsViewController: UITextFieldDelegate {
 // MARK: - Alert Controller
 private extension SettingsViewController {
     func showInvalidInputAlert(title: String, message: String, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title,
-                                      message: message,
-                                      preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
         
         let alertAction = UIAlertAction(
             title: "Close",
@@ -186,5 +177,39 @@ private extension SettingsViewController {
         
         alert.addAction(alertAction)
         present(alert, animated: true)
+    }
+}
+
+// MARK: - Adding Done button
+extension UITextField{
+    @IBInspectable var doneAccessory: Bool{
+        get{
+            return self.doneAccessory
+        }
+        set (hasDone) {
+            if hasDone{
+                addDoneButtonOnKeyboard()
+            }
+        }
+    }
+
+    func addDoneButtonOnKeyboard()
+    {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+
+        self.inputAccessoryView = doneToolbar
+    }
+
+    @objc func doneButtonAction()
+    {
+        self.resignFirstResponder()
     }
 }
