@@ -33,40 +33,11 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         rgbView.layer.cornerRadius = 15
-        
-        /*
-        guard let backgroundColor = colorView.backgroundColor else { return }
-        if let colorComponents = extractColors(for: backgroundColor) {
-            updateRGBview(
-                redVal: colorComponents.red,
-                greenVal: colorComponents.green,
-                blueVal: colorComponents.blue
-            )
-            redSlider.value = colorComponents.red
-            greenSlider.value = colorComponents.green
-            blueSlider.value = colorComponents.blue
-            
-            redLabel.text = roundString(for: colorComponents.red)
-            greenLabel.text = roundString(for: colorComponents.green)
-            blueLabel.text = roundString(for: colorComponents.blue)
-        }
-         */
-        
-        guard let components = colorView.backgroundColor?.components else { return }
-        
-        redSlider.value = Float(components.red)
-        greenSlider.value = Float(components.green)
-        blueSlider.value = Float(components.blue)
-        
-        redLabel.text = roundString(for: redSlider.value)
-        greenLabel.text = roundString(for: greenSlider.value)
-        blueLabel.text = roundString(for: blueSlider.value)
-        
-        updateRGBview(
-            redVal: redSlider.value,
-            greenVal: greenSlider.value,
-            blueVal: blueSlider.value
-        )
+        updateUI()
+       
+        redTextField.delegate = self
+        greenTextField.delegate = self
+        blueTextField.delegate = self
     }
     
     // MARK: - IB Actions
@@ -77,13 +48,18 @@ final class SettingsViewController: UIViewController {
             blueVal: blueSlider.value
         )
         
+        let roundedValue = roundString(for: sender.value)
+        
         switch sender {
         case redSlider:
-            redLabel.text = roundString(for: sender.value)
+            redLabel.text = roundedValue
+            redTextField.text = roundedValue
         case greenSlider:
-            greenLabel.text = roundString(for: sender.value)
+            greenLabel.text = roundedValue
+            greenTextField.text = roundedValue
         default:
-            blueLabel.text = roundString(for: sender.value)
+            blueLabel.text = roundedValue
+            blueTextField.text = roundedValue
         }
     }
     
@@ -110,16 +86,27 @@ private extension SettingsViewController {
         )
     }
     
-    /*
-    func extractColors(for color: UIColor) -> (red: Float, green: Float, blue: Float)? {
-        guard let components = color.cgColor.components else { return nil }
-        let red = Float(components[0])
-        let green = Float(components[1])
-        let blue = Float(components[2])
+    func updateUI() {
+        guard let components = colorView.backgroundColor?.components else { return }
         
-        return (red, green, blue)
+        redSlider.value = Float(components.red)
+        greenSlider.value = Float(components.green)
+        blueSlider.value = Float(components.blue)
+        
+        redLabel.text = roundString(for: redSlider.value)
+        greenLabel.text = roundString(for: greenSlider.value)
+        blueLabel.text = roundString(for: blueSlider.value)
+        
+        redTextField.text = redLabel.text
+        greenTextField.text = greenLabel.text
+        blueTextField.text = blueLabel.text
+        
+        updateRGBview(
+            redVal: redSlider.value,
+            greenVal: greenSlider.value,
+            blueVal: blueSlider.value
+        )
     }
-     */
 }
 
 extension UIColor {
@@ -128,8 +115,62 @@ extension UIColor {
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
+        /*
+         В вашем коде, метод getRed(_:green:blue:alpha:) вызывается с использованием передачи параметров по ссылке (&red, &green, &blue, &alpha). Это означает, что метод будет пытаться заполнить переданные параметры значениями компонентов цвета, и если это удастся, он вернет true, иначе вернет false.
+         
+         Метод извлекает цвета из UIColor и, если это получается, возвращает тру и заполняет переменные значениями
+         */
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
 
         return (red, green, blue, alpha)
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension SettingsViewController: UITextFieldDelegate {
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        guard let text = textField.text,
+              let floatText = Float(text) else { return }
+        
+        if !(0.0...1.0).contains(floatText) {
+            showInvalidInputAlert()
+            return
+        }
+        
+        switch textField {
+            case redTextField:
+                redSlider.setValue(floatText, animated: true)
+                redLabel.text = roundString(for: redSlider.value)
+            case greenTextField: 
+                greenSlider.setValue(floatText, animated: true)
+                greenLabel.text = roundString(for: greenSlider.value)
+            default:
+                blueSlider.setValue(floatText, animated: true)
+                blueLabel.text = roundString(for: blueSlider.value)
+        }
+        
+        updateRGBview(
+            redVal: redSlider.value,
+            greenVal: greenSlider.value,
+            blueVal: blueSlider.value
+        )
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
+}
+
+// MARK: - Alert Controller
+private extension SettingsViewController {
+    func showInvalidInputAlert() {
+        let alert = UIAlertController(title: "Error!",
+                                      message: "Invald input.\nValid input: 0.0 - 1.0",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Close",
+                                      style: .default))
+        present(alert, animated: true)
     }
 }
