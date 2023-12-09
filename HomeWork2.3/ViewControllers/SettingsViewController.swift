@@ -68,6 +68,12 @@ final class SettingsViewController: UIViewController {
         dismiss(animated: true)
     }
     
+    // MARK: - Public Methods
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
+    
  }
 
 // MARK: - Private Methods
@@ -135,7 +141,9 @@ extension SettingsViewController: UITextFieldDelegate {
               let floatText = Float(text) else { return }
         
         if !(0.0...1.0).contains(floatText) {
-            showInvalidInputAlert()
+            showInvalidInputAlert(title: "Error.", message: "Invald input.\nValid input: 0.0 - 1.0") {
+                textField.text = nil
+            }
             return
         }
         
@@ -165,12 +173,18 @@ extension SettingsViewController: UITextFieldDelegate {
 
 // MARK: - Alert Controller
 private extension SettingsViewController {
-    func showInvalidInputAlert() {
-        let alert = UIAlertController(title: "Error!",
-                                      message: "Invald input.\nValid input: 0.0 - 1.0",
+    func showInvalidInputAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Close",
-                                      style: .default))
+        
+        let alertAction = UIAlertAction(
+            title: "Close",
+            style: .default) { _ in
+                completion?()
+            }
+        
+        alert.addAction(alertAction)
         present(alert, animated: true)
     }
 }
